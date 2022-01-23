@@ -30,7 +30,9 @@ int main() {
 			std::cout << value << ' ';
 		}
 		std::cout << std::endl;
-		matrix.slice<1, 4>({ 1, 2 }, { 0, 4 });
+		matrix.slice<5, 2>({ }, { 0, 2 }).print();
+
+		std::cout << std::endl << matrix.size() << ' ' << matrix.row_size() << ' ' << matrix.column_size();
 	}
 	catch (const std::length_error& e) {
 		std::cerr << e.what() << '\n';

@@ -4,10 +4,11 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
+#include <utility>
 
 namespace nonstd {
 	enum class range {
-		all
+		rows, columns
 	};
 
 	template<class T, size_t M, size_t N>
@@ -24,9 +25,10 @@ namespace nonstd {
 		std::vector<T> operator[](size_t);
 
 		void print();
-
+		size_t size();
+		size_t column_size();
+		size_t row_size();
 		matrix<T, N, M> transpose();
-
 		std::vector<T> flatten();
 
 		template<size_t newM, size_t newN>
@@ -101,26 +103,40 @@ namespace nonstd {
 		const std::pair<size_t, size_t>& row_interval, 
 		const std::pair<size_t, size_t>& column_interval
 	) {
+		std::pair<size_t, size_t> row_interval_copy = row_interval;
+		std::pair<size_t, size_t> column_interval_copy = column_interval;
+
+		if (row_interval_copy.first == 0 && row_interval_copy.second == 0) {
+			row_interval_copy.second = M;
+		}
+
+		if (column_interval_copy.first == 0 && column_interval_copy.second == 0) {
+			column_interval_copy.second = N;
+		}
+
 		static_assert(newM <= M, "sliced matrix dimensions are invalid");
 		static_assert(newN <= N, "sliced matrix dimensions are invalid");
 		static_assert(1 <= newM, "sliced matrix dimensions are invalid");
 		static_assert(1 <= newN, "sliced matrix dimensions are invalid");
 
-		if (row_interval.second - row_interval.first != newM || column_interval.second - column_interval.first != newN) {
+		if (
+			row_interval_copy.second - row_interval_copy.first != newM || 
+			column_interval_copy.second - column_interval_copy.first != newN
+		) {
 			throw std::length_error(
 				"sliced matrix dimensions are " + std::to_string(newM) + 
 				"x" + std::to_string(newN) + " - should be " + 
-				std::to_string(row_interval.second - row_interval.first) + "x" +
-				std::to_string(column_interval.second - column_interval.first)
+				std::to_string(row_interval_copy.second - row_interval_copy.first) + "x" +
+				std::to_string(column_interval_copy.second - column_interval_copy.first)
 			);
 		}
 
 		std::vector<T> sliced_matrix;
 
-		for (size_t i = row_interval.first; i < row_interval.second; i++) {
+		for (size_t i = row_interval_copy.first; i < row_interval_copy.second; i++) {
 			std::vector<T> sliced_row(
-				data.begin() + (i * N) + column_interval.first,
-				data.begin() + (i * N) + column_interval.first + column_interval.second
+				data.begin() + (i * N) + column_interval_copy.first,
+				data.begin() + (i * N) + column_interval_copy.first + column_interval_copy.second
 			);
 			sliced_matrix.insert(sliced_matrix.end(), sliced_row.begin(), sliced_row.end());
 		}
@@ -154,5 +170,20 @@ namespace nonstd {
 	template<class T, size_t M, size_t N>
 	std::vector<T> matrix<T, M, N>::flatten() {
 		return data;
+	}
+
+	template<class T, size_t M, size_t N>
+	size_t matrix<T, M, N>::size() {
+		return data.size();
+	}
+
+	template<class T, size_t M, size_t N>
+	size_t matrix<T, M, N>::column_size() {
+		return M;
+	}
+
+	template<class T, size_t M, size_t N>
+	size_t matrix<T, M, N>::row_size() {
+		return N;
 	}
 }
