@@ -17,7 +17,7 @@ namespace nonstd {
 
 		matrix(const matrix& other) = default;
 		matrix& operator=(const matrix& rhs) = default;
-		T& operator[](const std::pair<size_t, size_t>&);
+		std::vector<T> operator[](size_t);
 
 		void print();
 		template<size_t newM, size_t newN>
@@ -76,8 +76,11 @@ namespace nonstd {
 
 	// Subscript operator
 	template<class T, size_t M, size_t N>
-	T& matrix<T, M, N>::operator[](const std::pair<size_t, size_t>& indeces) {
-		return data.at(indeces.first * N + indeces.second);
+	std::vector<T> matrix<T, M, N>::operator[](size_t row) {
+		return std::vector<T>(
+			data.begin() + (row * N), 
+			data.begin() + (row * N) + N
+		);
 	}
 
 	/*

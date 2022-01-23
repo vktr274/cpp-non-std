@@ -23,7 +23,12 @@ int main() {
 			}
 		}
 		std::cout << std::endl;
-		std::cout << matrix[{ 2, 2 }] << '\n';
+		std::cout << matrix[2][2] << '\n';
+
+		auto row = matrix[2];
+		for (const auto& value : row) {
+			std::cout << value << ' ';
+		}
 	}
 	catch (const std::length_error& e) {
 		std::cerr << e.what() << '\n';
@@ -35,7 +40,7 @@ int main() {
 	std::cout << std::endl;
 
 	nonstd::matrix<std::string, 2, 2> matrixStr = { {"ahoj", "cau"}, {"bruh", "kek"} };
-	nonstd::matrix<std::string, 10, 10> testM = std::string("ahoj");
+	nonstd::matrix<double, 10, 10> testM = 3.14;
 
 	matrixStr.print();
 	matrixStr.transpose<2, 2>().print();
