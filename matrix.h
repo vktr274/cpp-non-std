@@ -3,7 +3,6 @@
 #include <vector>
 #include <iostream>
 #include <iomanip>
-#include <array>
 #include <algorithm>
 
 namespace nonstd {
@@ -18,15 +17,21 @@ namespace nonstd {
 
 		matrix(const matrix& other) = default;
 		matrix& operator=(const matrix& rhs) = default;
+		T& operator[](const std::pair<size_t, size_t>&);
 
 		void print();
-
 		template<size_t newM, size_t newN>
 		matrix<T, newM, newN> transpose();
+		std::vector<T> flatten();
 	private:
 		std::vector<T> data;
 	};
 
+	/*
+	* Constructors
+	*/
+
+	// Constructor from initializer list
 	template<class T, size_t M, size_t N>
 	matrix<T, M, N>::matrix(std::initializer_list<std::initializer_list<T>> data_) {
 		if (data_.size() != M) {
@@ -50,16 +55,34 @@ namespace nonstd {
 		}
 	}
 
+	
+	// Constructor from a value
 	template<class T, size_t M, size_t N>
 	matrix<T, M, N>::matrix(T value) {
 		data.resize(M * N);
 		std::fill(data.begin(), data.end(), value);
 	}
 
+
+	// Constructor from vector
 	template<class T, size_t M, size_t N>
 	matrix<T, M, N>::matrix(std::vector<T> vector) {
 		data = vector;
 	}
+
+	/*
+	* Operators
+	*/
+
+	// Subscript operator
+	template<class T, size_t M, size_t N>
+	T& matrix<T, M, N>::operator[](const std::pair<size_t, size_t>& indeces) {
+		return data.at(indeces.first * N + indeces.second);
+	}
+
+	/*
+	* Member functions
+	*/
 
 	template<class T, size_t M, size_t N>
 	void matrix<T, M, N>::print() {
@@ -83,5 +106,10 @@ namespace nonstd {
 		}
 
 		return matrix<T, newM, newN>(transposed);
+	}
+
+	template<class T, size_t M, size_t N>
+	std::vector<T> matrix<T, M, N>::flatten() {
+		return data;
 	}
 }

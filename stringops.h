@@ -33,7 +33,7 @@ namespace nonstd {
 
         while ((start_pos = stringCopy.find(what, start_pos)) != std::string::npos) {
             stringCopy.replace(start_pos, what.length(), by);
-            start_pos += by.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+            start_pos += by.length();
         }
 
         return stringCopy;
