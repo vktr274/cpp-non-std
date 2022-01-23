@@ -25,8 +25,7 @@ namespace nonstd {
 
 		void print();
 
-		template<size_t newM, size_t newN>
-		matrix<T, newM, newN> transpose();
+		matrix<T, N, M> transpose();
 
 		std::vector<T> flatten();
 
@@ -92,12 +91,21 @@ namespace nonstd {
 		);
 	}
 
+	/*
+	* Member functions
+	*/
+
 	template<class T, size_t M, size_t N>
 	template<size_t newM, size_t newN>
 	matrix<T, newM, newN> matrix<T, M, N>::slice(
 		const std::pair<size_t, size_t>& row_interval, 
 		const std::pair<size_t, size_t>& column_interval
 	) {
+		static_assert(newM <= M, "sliced matrix dimensions are invalid");
+		static_assert(newN <= N, "sliced matrix dimensions are invalid");
+		static_assert(1 <= newM, "sliced matrix dimensions are invalid");
+		static_assert(1 <= newN, "sliced matrix dimensions are invalid");
+
 		if (row_interval.second - row_interval.first != newM || column_interval.second - column_interval.first != newN) {
 			throw std::length_error(
 				"sliced matrix dimensions are " + std::to_string(newM) + 
@@ -120,10 +128,6 @@ namespace nonstd {
 		return matrix<T, newM, newN>(sliced_matrix);
 	}
 
-	/*
-	* Member functions
-	*/
-
 	template<class T, size_t M, size_t N>
 	void matrix<T, M, N>::print() {
 		for (size_t i = 0; i < M; i++) {
@@ -135,17 +139,16 @@ namespace nonstd {
 	}
 
 	template<class T, size_t M, size_t N>
-	template<size_t newM, size_t newN>
-	matrix<T, newM, newN> matrix<T, M, N>::transpose() {
+	matrix<T, N, M> matrix<T, M, N>::transpose() {
 		std::vector<T> transposed;
-		
+
 		for (size_t j = 0; j < N; j++) {
 			for (size_t i = 0; i < M; i++) {
 				transposed.push_back(data.at(i * N + j));
 			}
 		}
 
-		return matrix<T, newM, newN>(transposed);
+		return matrix<T, N, M>(transposed);
 	}
 
 	template<class T, size_t M, size_t N>

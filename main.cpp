@@ -13,7 +13,7 @@ int main() {
 			{17, 18, 19, 20}
 		};
 		matrix.print();
-		matrix.transpose<4, 5>().print();
+		matrix.transpose().print();
 		auto flattened = matrix.flatten();
 
 		for (size_t i = 0; i < flattened.size(); i++) {
@@ -30,7 +30,7 @@ int main() {
 			std::cout << value << ' ';
 		}
 		std::cout << std::endl;
-		matrix.slice<3, 2>({ 1, 4 }, { 0, 2 }).print();
+		matrix.slice<1, 4>({ 1, 2 }, { 0, 4 });
 	}
 	catch (const std::length_error& e) {
 		std::cerr << e.what() << '\n';
@@ -45,7 +45,7 @@ int main() {
 	nonstd::matrix<double, 10, 10> testM = 3.14;
 
 	matrixStr.print();
-	matrixStr.transpose<2, 2>().print();
+	matrixStr.transpose().print();
 	matrixStr.print();
 	testM.print();
 
