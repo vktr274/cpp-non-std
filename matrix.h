@@ -6,6 +6,10 @@
 #include <algorithm>
 
 namespace nonstd {
+	enum class range {
+		all
+	};
+
 	template<class T, size_t M, size_t N>
 	class matrix {
 	public:
@@ -20,9 +24,14 @@ namespace nonstd {
 		std::vector<T> operator[](size_t);
 
 		void print();
+
 		template<size_t newM, size_t newN>
 		matrix<T, newM, newN> transpose();
+
 		std::vector<T> flatten();
+
+		template<size_t newM, size_t newN>
+		matrix<T, newM, newN> slice(const std::pair<size_t, size_t>&, const std::pair<size_t, size_t>&);
 	private:
 		std::vector<T> data;
 	};
@@ -81,6 +90,34 @@ namespace nonstd {
 			data.begin() + (row * N), 
 			data.begin() + (row * N) + N
 		);
+	}
+
+	template<class T, size_t M, size_t N>
+	template<size_t newM, size_t newN>
+	matrix<T, newM, newN> matrix<T, M, N>::slice(
+		const std::pair<size_t, size_t>& row_interval, 
+		const std::pair<size_t, size_t>& column_interval
+	) {
+		if (row_interval.second - row_interval.first != newM || column_interval.second - column_interval.first != newN) {
+			throw std::length_error(
+				"sliced matrix dimensions are " + std::to_string(newM) + 
+				"x" + std::to_string(newN) + " - should be " + 
+				std::to_string(row_interval.second - row_interval.first) + "x" +
+				std::to_string(column_interval.second - column_interval.first)
+			);
+		}
+
+		std::vector<T> sliced_matrix;
+
+		for (size_t i = row_interval.first; i < row_interval.second; i++) {
+			std::vector<T> sliced_row(
+				data.begin() + (i * N) + column_interval.first,
+				data.begin() + (i * N) + column_interval.first + column_interval.second
+			);
+			sliced_matrix.insert(sliced_matrix.end(), sliced_row.begin(), sliced_row.end());
+		}
+
+		return matrix<T, newM, newN>(sliced_matrix);
 	}
 
 	/*

@@ -4,13 +4,13 @@
 
 int main() {
 	try {
-		nonstd::matrix<uint32_t, 5, 4> matrix = 
+		nonstd::matrix<uint32_t, 5, 4> matrix =
 		{
-			{1, 2, 3, 4}, 
-			{5, 6, 7, 8}, 
-			{9, 10, 11, 12}, 
-			{13, 14, 15, 16}, 
-			{17, 18, 19, 20} 
+			{1, 2, 3, 4},
+			{5, 6, 7, 8},
+			{9, 10, 11, 12},
+			{13, 14, 15, 16},
+			{17, 18, 19, 20}
 		};
 		matrix.print();
 		matrix.transpose<4, 5>().print();
@@ -29,6 +29,8 @@ int main() {
 		for (const auto& value : row) {
 			std::cout << value << ' ';
 		}
+		std::cout << std::endl;
+		matrix.slice<3, 2>({ 1, 4 }, { 0, 2 }).print();
 	}
 	catch (const std::length_error& e) {
 		std::cerr << e.what() << '\n';
