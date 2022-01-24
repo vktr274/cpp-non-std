@@ -7,22 +7,22 @@
 #include <utility>
 
 namespace nonstd {
-	enum class range {
-		rows, columns
-	};
-
 	template<class T, size_t M, size_t N>
 	class matrix {
 	public:
 		matrix(std::initializer_list<std::initializer_list<T>>);
+		matrix(std::initializer_list<T>);
 		matrix(std::vector<T>);
 		matrix(T);
 		matrix() = default;
 		~matrix() = default;
 
-		matrix(const matrix& other) = default;
-		matrix& operator=(const matrix& rhs) = default;
+		matrix(const matrix&) = default;
+		matrix& operator=(const matrix&) = default;
 		std::vector<T> operator[](size_t);
+
+		template<size_t newM, size_t newN>
+		matrix<T, newM, newN> slice(const std::pair<size_t, size_t>&, const std::pair<size_t, size_t>&);
 
 		void print();
 		size_t size();
@@ -30,18 +30,16 @@ namespace nonstd {
 		size_t row_size();
 		matrix<T, N, M> transpose();
 		std::vector<T> flatten();
-
-		template<size_t newM, size_t newN>
-		matrix<T, newM, newN> slice(const std::pair<size_t, size_t>&, const std::pair<size_t, size_t>&);
 	private:
 		std::vector<T> data;
+		friend std::ostream& operator<< <>(std::ostream&, const matrix<T, M, N>&);
 	};
 
 	/*
 	* Constructors
 	*/
 
-	// Constructor from initializer list
+	// Constructor from initializer list of initializer lists.
 	template<class T, size_t M, size_t N>
 	matrix<T, M, N>::matrix(std::initializer_list<std::initializer_list<T>> data_) {
 		if (data_.size() != M) {
@@ -54,8 +52,8 @@ namespace nonstd {
 		for (const auto& row : data_) {
 			if (row.size() != N) {
 				throw std::length_error(
-					"length of matrix row is " + 
-					std::to_string(row.size()) + 
+					"length of matrix row is " +
+					std::to_string(row.size()) +
 					" - should be " + std::to_string(N)
 				);
 			}
@@ -65,26 +63,44 @@ namespace nonstd {
 		}
 	}
 
-	
-	// Constructor from a value
+	// Constructor from initializer list.
+	template<class T, size_t M, size_t N>
+	matrix<T, M, N>::matrix(std::initializer_list<T> data_) {
+		if (M * N != data_.size()) {
+			throw std::length_error(
+				"vector of size " + std::to_string(data_.size()) +
+				" cannot be converted to a " + std::to_string(M) +
+				"x" + std::to_string(N) + " matrix"
+			);
+		}
+		data = std::vector<T>(data_.begin(), data_.end());
+	}
+
+	// Constructor from vector.
+	template<class T, size_t M, size_t N>
+	matrix<T, M, N>::matrix(std::vector<T> data_) {
+		if (M * N != data_.size()) {
+			throw std::length_error(
+				"vector of size " + std::to_string(data_.size()) +
+				" cannot be converted to a " + std::to_string(M) +
+				"x" + std::to_string(N) + " matrix"
+			);
+		}
+		data = data_;
+	}
+
+	// Constructor from a value.
 	template<class T, size_t M, size_t N>
 	matrix<T, M, N>::matrix(T value) {
 		data.resize(M * N);
 		std::fill(data.begin(), data.end(), value);
 	}
 
-
-	// Constructor from vector
-	template<class T, size_t M, size_t N>
-	matrix<T, M, N>::matrix(std::vector<T> vector) {
-		data = vector;
-	}
-
 	/*
 	* Operators
 	*/
 
-	// Subscript operator
+	// Subscript operator.
 	template<class T, size_t M, size_t N>
 	std::vector<T> matrix<T, M, N>::operator[](size_t row) {
 		return std::vector<T>(
@@ -93,10 +109,26 @@ namespace nonstd {
 		);
 	}
 
+	// Stream insertion operator.
+	template<class T, size_t M, size_t N>
+	std::ostream& operator<<(std::ostream& out, const matrix<T, M, N>& rhs) {
+		for (size_t i = 0; i < M; i++) {
+			for (size_t j = 0; j < N; j++) {
+				out << std::setw(5) << rhs.data.at(i * N + j) << std::setw(5);
+			}
+			out << '\n';
+		}
+		return out;
+	}
+	
 	/*
 	* Member functions
 	*/
 
+	/*
+	* Function that creates a sliced matrix of dimensions newM * newN.
+	* Returns: new sliced matrix.
+	*/
 	template<class T, size_t M, size_t N>
 	template<size_t newM, size_t newN>
 	matrix<T, newM, newN> matrix<T, M, N>::slice(
@@ -144,6 +176,7 @@ namespace nonstd {
 		return matrix<T, newM, newN>(sliced_matrix);
 	}
 
+	// Function for formatted printing of matrices.
 	template<class T, size_t M, size_t N>
 	void matrix<T, M, N>::print() {
 		for (size_t i = 0; i < M; i++) {
@@ -154,6 +187,10 @@ namespace nonstd {
 		}
 	}
 
+	/* 
+	* Function that transposes matrices from M * N to N * M.
+	* Returns: new transposed matrix.
+	*/
 	template<class T, size_t M, size_t N>
 	matrix<T, N, M> matrix<T, M, N>::transpose() {
 		std::vector<T> transposed;
@@ -167,6 +204,10 @@ namespace nonstd {
 		return matrix<T, N, M>(transposed);
 	}
 
+	/*
+	* Function for flattening matrices.
+	* Returns: 1D vector from the matrix.
+	*/
 	template<class T, size_t M, size_t N>
 	std::vector<T> matrix<T, M, N>::flatten() {
 		return data;
