@@ -8,6 +8,12 @@
 
 namespace nonstd {
 	template<class T, size_t M, size_t N>
+	class matrix;
+
+	template<class T, size_t M, size_t N>
+	std::ostream& operator<<(std::ostream&, const matrix<T, M, N>&);
+
+	template<class T, size_t M, size_t N>
 	class matrix {
 	public:
 		matrix(std::initializer_list<std::initializer_list<T>>);
