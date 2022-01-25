@@ -20,8 +20,8 @@ namespace nonstd {
 	template<class T, size_t M, size_t N>
 	matrix<T, M, N> operator+(const matrix<T, M, N>&, const matrix<T, M, N>&);
 
-	template<class T, size_t M, size_t N, size_t S>
-	matrix<T, M, N> operator*(const matrix<T, M, S>&, const matrix<T, S, N>&);
+	template<class TT, size_t MM, size_t NN, size_t SS>
+	matrix<TT, MM, NN> operator*(const matrix<TT, MM, SS>&, const matrix<TT, SS, NN>&);
 
 	template<class T, size_t M, size_t N>
 	class matrix {
@@ -51,8 +51,8 @@ namespace nonstd {
 
 		friend std::ostream& operator<< <>(std::ostream&, const matrix&);
 		friend matrix operator+ <>(const matrix&, const matrix&);
-		template<size_t S>
-		friend matrix<T, M, N> operator*(const matrix<T, M, S>&, const matrix<T, S, N>&);
+		template<class TT, size_t MM, size_t NN, size_t SS>
+		friend matrix<TT, MM, NN> operator*(const matrix<TT, MM, SS>&, const matrix<TT, SS, NN>&);
 	};
 
 	/*
@@ -156,22 +156,22 @@ namespace nonstd {
 	}
 
 	// Multiplication operation.
-	template<class T, size_t M, size_t N, size_t S>
-	matrix<T, M, N> operator*(const matrix<T, M, S>& lhs, const matrix<T, S, N>& rhs) {
-		static_assert(std::is_arithmetic<T>::value, "matrix types not numeric");
+	template<class TT, size_t MM, size_t NN, size_t SS>
+	matrix<TT, MM, NN> operator*(const matrix<TT, MM, SS>& lhs, const matrix<TT, SS, NN>& rhs) {
+		static_assert(std::is_arithmetic<TT>::value, "matrix types not numeric");
 
-		std::vector<T> result(M * N, T(0));
+		std::vector<TT> result(MM * NN, TT(0));
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				result[i * N + j] = T(0);
-				for (size_t k = 0; k < S; k++) {
-					result[i * N + j] = lhs.data[i * S + k] + rhs.data[k * N + j];
+		for (size_t i = 0; i < MM; i++) {
+			for (size_t j = 0; j < NN; j++) {
+				result[i * NN + j] = TT(0);
+				for (size_t k = 0; k < SS; k++) {
+					result[i * NN + j] = lhs.data[i * SS + k] + rhs.data[k * NN + j];
 				}
 			}
 		}
 
-		return matrix<T, M, N>(result);
+		return matrix<TT, MM, NN>(result);
 	}
 
 	/*
