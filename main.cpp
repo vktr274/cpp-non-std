@@ -1,5 +1,5 @@
 #include <iostream>
-#include "stringops.h"
+//#include "stringops.h"
 #include "matrix.h"
 
 using namespace std::literals;
@@ -39,6 +39,12 @@ int main() {
 		std::cout << matrix.slice<5, 2>({ }, { 0, 2 });
 
 		std::cout << std::endl << matrix.size() << ' ' << matrix.row_size() << ' ' << matrix.column_size();
+		std::cout << std::endl;
+
+		nonstd::matrix<uint16_t, 2, 2> matrixMulTest1 = { 3, 4, 5, 6 };
+		nonstd::matrix<uint16_t, 2, 2> matrixMulTest2 = { 3, 4, 5, 6 };
+
+		std::cout << (matrixMulTest1 * matrixMulTest2);
 	}
 	catch (const std::length_error& e) {
 		std::cerr << e.what() << '\n';
@@ -46,10 +52,6 @@ int main() {
 	catch (const std::out_of_range& e) {
 		std::cerr << e.what() << '\n';
 	}
-
-	std::cout << std::endl;
-
-	nonstd::matrix<double, 10, 10> testM = 3.14;
 
 	return 0;
 }

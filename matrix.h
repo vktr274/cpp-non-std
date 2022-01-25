@@ -1,10 +1,14 @@
 #pragma once
 
+#include <cstdint>
 #include <vector>
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
 #include <utility>
+#include <type_traits>
+#include <initializer_list>
+#include <string>
 
 namespace nonstd {
 	template<class T, size_t M, size_t N>
@@ -12,6 +16,12 @@ namespace nonstd {
 
 	template<class T, size_t M, size_t N>
 	std::ostream& operator<<(std::ostream&, const matrix<T, M, N>&);
+
+	template<class T, size_t M, size_t N>
+	matrix<T, M, N> operator+(const matrix<T, M, N>&, const matrix<T, M, N>&);
+
+	template<class T, size_t M, size_t N, size_t S>
+	matrix<T, M, N> operator*(const matrix<T, M, S>&, const matrix<T, S, N>&);
 
 	template<class T, size_t M, size_t N>
 	class matrix {
@@ -38,7 +48,11 @@ namespace nonstd {
 		std::vector<T> flatten();
 	private:
 		std::vector<T> data;
-		friend std::ostream& operator<< <>(std::ostream&, const matrix<T, M, N>&);
+
+		friend std::ostream& operator<< <>(std::ostream&, const matrix&);
+		friend matrix operator+ <>(const matrix&, const matrix&);
+		template<size_t S>
+		friend matrix<T, M, N> operator*(const matrix<T, M, S>&, const matrix<T, S, N>&);
 	};
 
 	/*
@@ -127,6 +141,39 @@ namespace nonstd {
 		return out;
 	}
 	
+	// Sum operator.
+	template<class T, size_t M, size_t N>
+	matrix<T, M, N> operator+(const matrix<T, M, N>& lhs, const matrix<T, M, N>& rhs) {
+		static_assert(std::is_arithmetic<T>::value, "matrix types not numeric");
+
+		std::vector<T> result;
+
+		for (size_t i = 0; i < M * N; i++) {
+			result.push_back(lhs.data[i] + rhs.data[i]);
+		}
+
+		return matrix<T, M, N>(result);
+	}
+
+	// Multiplication operation.
+	template<class T, size_t M, size_t N, size_t S>
+	matrix<T, M, N> operator*(const matrix<T, M, S>& lhs, const matrix<T, S, N>& rhs) {
+		static_assert(std::is_arithmetic<T>::value, "matrix types not numeric");
+
+		std::vector<T> result(M * N, T(0));
+
+		for (size_t i = 0; i < M; i++) {
+			for (size_t j = 0; j < N; j++) {
+				result[i * N + j] = T(0);
+				for (size_t k = 0; k < S; k++) {
+					result[i * N + j] = lhs.data[i * S + k] + rhs.data[k * N + j];
+				}
+			}
+		}
+
+		return matrix<T, M, N>(result);
+	}
+
 	/*
 	* Member functions
 	*/
