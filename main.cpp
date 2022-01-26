@@ -6,17 +6,25 @@ using namespace std::literals;
 
 int main() {
 	try {
-		nonstd::matrix<uint16_t, 2, 2> matrixFrom1D = { 3, 4, 5, 6 };
-		nonstd::matrix<double, 3, 4> matrixDouble = { { 1.1, 2.1, 4.5, 5.9 }, { 5.8, 8.9, 3.998, 33.8 }, { 0.12, 3.14, 7.24, 76.89 } };
-		nonstd::matrix<std::string, 2, 2> matrixStr = { {"kewk"s, "bonk"s}, {"bruh"s, "kek"s} };
+		nonstd::matrix<double, 3, 4> matrixDouble =
+		{
+			1.1, 2.1, 4.5, 5.9,
+			5.8, 8.9, 3.998, 33.8,
+			0.12, 3.14, 7.24, 76.89
+		};
+		nonstd::matrix<std::string, 2, 2> matrixStr =
+		{
+			"kewk"s, "bonk"s,
+			"bruh"s, "kek"s
+		};
 
 		nonstd::matrix<uint32_t, 5, 4> matrix =
 		{
-			{1, 2, 3, 4},
-			{5, 6, 7, 8},
-			{9, 10, 11, 12},
-			{13, 14, 15, 16},
-			{17, 18, 19, 20}
+			1, 2, 3, 4,
+			5, 6, 7, 8,
+			9, 10, 11, 12,
+			13, 14, 15, 16,
+			17, 18, 19, 20
 		};
 		std::cout << matrix;
 		std::cout << matrix.transpose();
@@ -41,8 +49,18 @@ int main() {
 		std::cout << std::endl << matrix.size() << ' ' << matrix.row_size() << ' ' << matrix.column_size();
 		std::cout << std::endl;
 
-		nonstd::matrix<uint16_t, 4, 2> matrixOpTest1 = { { 1, 2 }, { 3, 4 }, {5, 6}, { 7, 8 } };
-		nonstd::matrix<uint16_t, 2, 3> matrixOpTest2 = { { 3, 4, 5 }, { 6, 8, 10 } };
+		nonstd::matrix<uint16_t, 4, 2> matrixOpTest1 =
+		{
+			1, 2,
+			3, 4,
+			5, 6,
+			7, 8
+		};
+		nonstd::matrix<uint16_t, 2, 3> matrixOpTest2 =
+		{
+			3, 4, 5,
+			6, 8, 10
+		};
 
 		std::cout << matrixOpTest1 * matrixOpTest2;
 		std::cout << matrixOpTest1 + matrixOpTest1;
@@ -53,9 +71,13 @@ int main() {
 		std::cout << 8Ui16 * matrixOpTest1;
 		std::cout << matrixOpTest1 * 8Ui16;
 
-		// nonstd::matrix<uint16_t, 2, 1> matrix_2_1_Test = { { 35 }, { 610 } };
+		nonstd::matrix<uint16_t, 2, 1> matrix_2_1_Test =
+		{
+			35,
+			610
+		};
 
-		// std::cout << std::endl << matrix_2_1_Test;
+		std::cout << std::endl << matrix_2_1_Test;
 	}
 	catch (const std::length_error& e) {
 		std::cerr << e.what() << '\n';

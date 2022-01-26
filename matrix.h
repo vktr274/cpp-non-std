@@ -44,7 +44,6 @@ namespace nonstd {
 	template<class T, size_t M, size_t N>
 	class matrix {
 	public:
-		matrix(std::initializer_list<std::initializer_list<T>>);
 		matrix(std::initializer_list<T>);
 		matrix(std::vector<T>);
 		matrix(T);
@@ -83,36 +82,12 @@ namespace nonstd {
 	* Constructors
 	*/
 
-	// Constructor from initializer list of initializer lists.
-	template<class T, size_t M, size_t N>
-	matrix<T, M, N>::matrix(std::initializer_list<std::initializer_list<T>> data_) {
-		if (data_.size() != M) {
-			throw std::length_error(
-				"length of matrix columns is " +
-				std::to_string(data_.size()) +
-				" - should be " + std::to_string(M)
-			);
-		}
-		for (const auto& row : data_) {
-			if (row.size() != N) {
-				throw std::length_error(
-					"length of matrix row is " +
-					std::to_string(row.size()) +
-					" - should be " + std::to_string(N)
-				);
-			}
-			for (const auto& value : row) {
-				data.push_back(value);
-			}
-		}
-	}
-
 	// Constructor from initializer list.
 	template<class T, size_t M, size_t N>
 	matrix<T, M, N>::matrix(std::initializer_list<T> data_) {
 		if (M * N != data_.size()) {
 			throw std::length_error(
-				"vector of size " + std::to_string(data_.size()) +
+				"list of size " + std::to_string(data_.size()) +
 				" cannot be converted to a " + std::to_string(M) +
 				"x" + std::to_string(N) + " matrix"
 			);
