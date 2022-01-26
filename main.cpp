@@ -41,10 +41,21 @@ int main() {
 		std::cout << std::endl << matrix.size() << ' ' << matrix.row_size() << ' ' << matrix.column_size();
 		std::cout << std::endl;
 
-		nonstd::matrix<uint16_t, 4, 2> matrixMulTest1 = { { 1, 2 }, { 3, 4 }, {5, 6}, { 7, 8 } };
-		nonstd::matrix<uint16_t, 2, 3> matrixMulTest2 = { { 3, 4, 5 }, { 6, 8, 10 } };
+		nonstd::matrix<uint16_t, 4, 2> matrixOpTest1 = { { 1, 2 }, { 3, 4 }, {5, 6}, { 7, 8 } };
+		nonstd::matrix<uint16_t, 2, 3> matrixOpTest2 = { { 3, 4, 5 }, { 6, 8, 10 } };
 
-		std::cout << (matrixMulTest1 * matrixMulTest2);
+		std::cout << matrixOpTest1 * matrixOpTest2;
+		std::cout << matrixOpTest1 + matrixOpTest1;
+		std::cout << matrixOpTest1 - matrixOpTest1;
+		std::cout << matrixOpTest1 + 8Ui16;
+		std::cout << matrixOpTest2 - 2Ui16;
+		std::cout << 8Ui16 + matrixOpTest1;
+		std::cout << 8Ui16 * matrixOpTest1;
+		std::cout << matrixOpTest1 * 8Ui16;
+
+		// nonstd::matrix<uint16_t, 2, 1> matrix_2_1_Test = { { 35 }, { 610 } };
+
+		// std::cout << std::endl << matrix_2_1_Test;
 	}
 	catch (const std::length_error& e) {
 		std::cerr << e.what() << '\n';

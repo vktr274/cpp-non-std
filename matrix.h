@@ -20,8 +20,26 @@ namespace nonstd {
 	template<class T, size_t M, size_t N>
 	matrix<T, M, N> operator+(const matrix<T, M, N>&, const matrix<T, M, N>&);
 
-	template<class TT, size_t MM, size_t NN, size_t SS>
-	matrix<TT, MM, NN> operator*(const matrix<TT, MM, SS>&, const matrix<TT, SS, NN>&);
+	template<class T, size_t M, size_t N>
+	matrix<T, M, N> operator+(const matrix<T, M, N>&, const T&);
+
+	template<class T, size_t M, size_t N>
+	matrix<T, M, N> operator+(const T&, const matrix<T, M, N>&);
+
+	template<class T, size_t M, size_t N>
+	matrix<T, M, N> operator-(const matrix<T, M, N>&, const matrix<T, M, N>&);
+
+	template<class T, size_t M, size_t N>
+	matrix<T, M, N> operator-(const matrix<T, M, N>&, const T&);
+
+	template<class T_, size_t M_, size_t N_, size_t S_>
+	matrix<T_, M_, N_> operator*(const matrix<T_, M_, S_>&, const matrix<T_, S_, N_>&);
+
+	template<class T, size_t M, size_t N>
+	matrix<T, M, N> operator*(const matrix<T, M, N>&, const T&);
+
+	template<class T, size_t M, size_t N>
+	matrix<T, M, N> operator*(const T&, const matrix<T, M, N>&);
 
 	template<class T, size_t M, size_t N>
 	class matrix {
@@ -51,8 +69,14 @@ namespace nonstd {
 
 		friend std::ostream& operator<< <>(std::ostream&, const matrix&);
 		friend matrix operator+ <>(const matrix&, const matrix&);
-		template<class TT, size_t MM, size_t NN, size_t SS>
-		friend matrix<TT, MM, NN> operator*(const matrix<TT, MM, SS>&, const matrix<TT, SS, NN>&);
+		friend matrix operator+ <>(const matrix&, const T&); 
+		friend matrix operator+ <>(const T&, const matrix&);
+		friend matrix operator- <>(const matrix&, const matrix&);
+		friend matrix operator- <>(const matrix&, const T&);
+		friend matrix operator* <>(const matrix&, const T&);
+		friend matrix operator* <>(const T&, const matrix&);
+		template<class T_, size_t M_, size_t N_, size_t S_>
+		friend matrix<T_, M_, N_> operator*(const matrix<T_, M_, S_>&, const matrix<T_, S_, N_>&);
 	};
 
 	/*
@@ -141,7 +165,7 @@ namespace nonstd {
 		return out;
 	}
 	
-	// Sum operator.
+	// Addition operator #1.
 	template<class T, size_t M, size_t N>
 	matrix<T, M, N> operator+(const matrix<T, M, N>& lhs, const matrix<T, M, N>& rhs) {
 		static_assert(std::is_arithmetic<T>::value, "matrix types not numeric");
@@ -155,23 +179,107 @@ namespace nonstd {
 		return matrix<T, M, N>(result);
 	}
 
-	// Multiplication operation.
-	template<class TT, size_t MM, size_t NN, size_t SS>
-	matrix<TT, MM, NN> operator*(const matrix<TT, MM, SS>& lhs, const matrix<TT, SS, NN>& rhs) {
-		static_assert(std::is_arithmetic<TT>::value, "matrix types not numeric");
+	// Addition operator #2.
+	template<class T, size_t M, size_t N>
+	matrix<T, M, N> operator+(const matrix<T, M, N>& lhs, const T& rhs) {
+		static_assert(std::is_arithmetic<T>::value, "matrix type not numeric");
 
-		std::vector<TT> result(MM * NN, TT(0));
+		std::vector<T> result;
 
-		for (size_t i = 0; i < MM; i++) {
-			for (size_t j = 0; j < NN; j++) {
-				result[i * NN + j] = TT(0);
-				for (size_t k = 0; k < SS; k++) {
-					result[i * NN + j] = lhs.data[i * SS + k] + rhs.data[k * NN + j];
+		for (size_t i = 0; i < M * N; i++) {
+			result.push_back(lhs.data[i] + rhs);
+		}
+
+		return matrix<T, M, N>(result);
+	}
+
+	// Addition operator #3.
+	template<class T, size_t M, size_t N>
+	matrix<T, M, N> operator+(const T& lhs, const matrix<T, M, N>& rhs) {
+		static_assert(std::is_arithmetic<T>::value, "matrix type not numeric");
+
+		std::vector<T> result;
+
+		for (size_t i = 0; i < M * N; i++) {
+			result.push_back(lhs + rhs.data[i]);
+		}
+
+		return matrix<T, M, N>(result);
+	}
+
+	// Subtraction operator #1.
+	template<class T, size_t M, size_t N>
+	matrix<T, M, N> operator-(const matrix<T, M, N>& lhs, const matrix<T, M, N>& rhs) {
+		static_assert(std::is_arithmetic<T>::value, "matrix types not numeric");
+
+		std::vector<T> result;
+
+		for (size_t i = 0; i < M * N; i++) {
+			result.push_back(lhs.data[i] - rhs.data[i]);
+		}
+
+		return matrix<T, M, N>(result);
+	}
+
+	// Subtraction operator #2.
+	template<class T, size_t M, size_t N>
+	matrix<T, M, N> operator-(const matrix<T, M, N>& lhs, const T& rhs) {
+		static_assert(std::is_arithmetic<T>::value, "matrix type not numeric");
+
+		std::vector<T> result;
+
+		for (size_t i = 0; i < M * N; i++) {
+			result.push_back(lhs.data[i] - rhs);
+		}
+
+		return matrix<T, M, N>(result);
+	}
+
+	// Multiplication operator #1.
+	template<class T_, size_t M_, size_t N_, size_t S_>
+	matrix<T_, M_, N_> operator*(const matrix<T_, M_, S_>& lhs, const matrix<T_, S_, N_>& rhs) {
+		static_assert(std::is_arithmetic<T_>::value, "matrix types not numeric");
+
+		std::vector<T_> result(M_ * N_, T_(0));
+
+		for (size_t i = 0; i < M_; i++) {
+			for (size_t j = 0; j < N_; j++) {
+				result[i * N_ + j] = T_(0);
+				for (size_t k = 0; k < S_; k++) {
+					result[i * N_ + j] = lhs.data[i * S_ + k] + rhs.data[k * N_ + j];
 				}
 			}
 		}
 
-		return matrix<TT, MM, NN>(result);
+		return matrix<T_, M_, N_>(result);
+	}
+
+	// Multiplication operator #2.
+	template<class T, size_t M, size_t N>
+	matrix<T, M, N> operator*(const matrix<T, M, N>& lhs, const T& rhs) {
+		static_assert(std::is_arithmetic<T>::value, "matrix type not numeric");
+
+		std::vector<T> result;
+
+		for (size_t i = 0; i < M * N; i++) {
+			result.push_back(lhs.data[i] * rhs);
+		}
+
+		return matrix<T, M, N>(result);
+	}
+
+	// Multiplication operator #3.
+	template<class T, size_t M, size_t N>
+	matrix<T, M, N> operator*(const T& lhs, const matrix<T, M, N>& rhs) {
+		static_assert(std::is_arithmetic<T>::value, "matrix type not numeric");
+
+		std::vector<T> result;
+
+		for (size_t i = 0; i < M * N; i++) {
+			result.push_back(lhs * rhs.data[i]);
+		}
+
+		return matrix<T, M, N>(result);
 	}
 
 	/*
