@@ -1,8 +1,6 @@
 #include <iostream>
-//#include "stringops.h"
+#include "stringops.h"
 #include "matrix.h"
-
-using namespace std::literals;
 
 int main() {
 	try {
@@ -14,8 +12,8 @@ int main() {
 		};
 		nonstd::matrix<std::string, 2, 2> matrixStr =
 		{
-			"kewk"s, "bonk"s,
-			"bruh"s, "kek"s
+			"kewk", "bonk",
+			"bruh", "kek"
 		};
 
 		nonstd::matrix<uint32_t, 5, 4> matrix =
@@ -65,19 +63,11 @@ int main() {
 		std::cout << matrixOpTest1 * matrixOpTest2;
 		std::cout << matrixOpTest1 + matrixOpTest1;
 		std::cout << matrixOpTest1 - matrixOpTest1;
-		std::cout << matrixOpTest1 + 8Ui16;
-		std::cout << matrixOpTest2 - 2Ui16;
-		std::cout << 8Ui16 + matrixOpTest1;
-		std::cout << 8Ui16 * matrixOpTest1;
-		std::cout << matrixOpTest1 * 8Ui16;
-
-		nonstd::matrix<uint16_t, 2, 1> matrix_2_1_Test =
-		{
-			35,
-			610
-		};
-
-		std::cout << std::endl << matrix_2_1_Test;
+		std::cout << matrixOpTest1 + uint16_t(8);
+		std::cout << matrixOpTest2 - uint16_t(2);
+		std::cout << uint16_t(8) + matrixOpTest1;
+		std::cout << uint16_t(8) * matrixOpTest1;
+		std::cout << matrixOpTest1 * uint16_t(8);
 	}
 	catch (const std::length_error& e) {
 		std::cerr << e.what() << '\n';
