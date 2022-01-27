@@ -60,7 +60,6 @@ namespace nonstd {
 		template<size_t newM, size_t newN>
 		matrix<T, newM, newN> resize();
 
-		void print();
 		void clear();
 		bool empty();
 		size_t size();
@@ -332,17 +331,6 @@ namespace nonstd {
 		}
 
 		return matrix<T, newM, newN>(data);
-	}
-
-	// Function for formatted printing of matrices.
-	template<class T, size_t M, size_t N>
-	void matrix<T, M, N>::print() {
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				std::cout << std::setw(5) << data.at(i * N + j) << std::setw(5);
-			}
-			std::cout << '\n';
-		}
 	}
 
 	/* 
