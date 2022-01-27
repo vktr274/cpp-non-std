@@ -57,7 +57,12 @@ namespace nonstd {
 		template<size_t newM, size_t newN>
 		matrix<T, newM, newN> slice(const std::pair<size_t, size_t>&, const std::pair<size_t, size_t>&);
 
+		template<size_t newM, size_t newN>
+		matrix<T, newM, newN> resize();
+
 		void print();
+		void clear();
+		bool empty();
 		size_t size();
 		size_t column_size();
 		size_t row_size();
@@ -312,6 +317,23 @@ namespace nonstd {
 		return matrix<T, newM, newN>(sliced_matrix);
 	}
 
+	template<class T, size_t M, size_t N>
+	template<size_t newM, size_t newN>
+	matrix<T, newM, newN> matrix<T, M, N>::resize() {
+		if (data.empty()) {
+			return matrix<T, newM, newN>();
+		}
+
+		if (newM * newN != data.size()) {
+			throw std::length_error(
+				"cannot resize " + std::to_string(M) + "x" + std::to_string(N) + 
+				" matrix to " + std::to_string(newM) + "x" + std::to_string(newN)
+			);
+		}
+
+		return matrix<T, newM, newN>(data);
+	}
+
 	// Function for formatted printing of matrices.
 	template<class T, size_t M, size_t N>
 	void matrix<T, M, N>::print() {
@@ -362,5 +384,15 @@ namespace nonstd {
 	template<class T, size_t M, size_t N>
 	size_t matrix<T, M, N>::row_size() {
 		return N;
+	}
+
+	template<class T, size_t M, size_t N>
+	bool matrix<T, M, N>::empty() {
+		return data.empty();
+	}
+
+	template<class T, size_t M, size_t N>
+	void matrix<T, M, N>::clear() {
+		data.clear();
 	}
 }
