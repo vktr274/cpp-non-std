@@ -52,7 +52,7 @@ namespace nonstd {
 
 		matrix(const matrix&) = default;
 		matrix& operator=(const matrix&) = default;
-		std::vector<T> operator[](size_t);
+		std::vector<T> operator[](size_t) const;
 
 		template<size_t newM, size_t newN>
 		matrix<T, newM, newN> slice(const std::pair<size_t, size_t>&, const std::pair<size_t, size_t>&);
@@ -61,10 +61,10 @@ namespace nonstd {
 		matrix<T, newM, newN> resize();
 
 		void clear();
-		bool empty();
-		size_t size();
-		size_t column_size();
-		size_t row_size();
+		bool empty() const;
+		size_t size() const;
+		size_t column_size() const;
+		size_t row_size() const;
 		matrix<T, N, M> transpose();
 		std::vector<T> flatten();
 	private:
@@ -125,7 +125,7 @@ namespace nonstd {
 
 	// Subscript operator.
 	template<class T, size_t M, size_t N>
-	std::vector<T> matrix<T, M, N>::operator[](size_t row) {
+	std::vector<T> matrix<T, M, N>::operator[](size_t row) const {
 		return std::vector<T>(
 			data.begin() + (row * N), 
 			data.begin() + (row * N) + N
@@ -360,22 +360,22 @@ namespace nonstd {
 	}
 
 	template<class T, size_t M, size_t N>
-	size_t matrix<T, M, N>::size() {
+	size_t matrix<T, M, N>::size() const {
 		return data.size();
 	}
 
 	template<class T, size_t M, size_t N>
-	size_t matrix<T, M, N>::column_size() {
+	size_t matrix<T, M, N>::column_size() const {
 		return M;
 	}
 
 	template<class T, size_t M, size_t N>
-	size_t matrix<T, M, N>::row_size() {
+	size_t matrix<T, M, N>::row_size() const {
 		return N;
 	}
 
 	template<class T, size_t M, size_t N>
-	bool matrix<T, M, N>::empty() {
+	bool matrix<T, M, N>::empty() const {
 		return data.empty();
 	}
 

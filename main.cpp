@@ -34,7 +34,9 @@ int main() {
 
 		std::cout << matrix.slice<5, 2>({ }, { 0, 2 }) << '\n';
 
-		std::cout << matrix.size() << ' ' << matrix.row_size() << ' ' << matrix.column_size() << '\n';
+		std::cout << matrix.size() << ' '; 
+		std::cout << matrix.row_size() << ' '; 
+		std::cout << matrix.column_size() << '\n';
 
 		nonstd::matrix<uint16_t, 4, 2> matrixOpTest1 =
 		{
@@ -64,6 +66,15 @@ int main() {
 		std::cout << transposedMatrix << '\n';
 		auto originalMatrix = transposedMatrix.transpose().resize<5, 4>();
 		std::cout << originalMatrix << '\n';
+
+		const nonstd::matrix<int32_t, 4, 3> constMatrix = { 1,2,3,4,5,6,7,8,9,10,11,12 };
+
+		std::cout << constMatrix.empty() << '\n';
+		std::cout << constMatrix.size() << ' '; 
+		std::cout << constMatrix.row_size() << ' ';
+		std::cout << constMatrix.column_size() << '\n';
+
+		std::cout << constMatrix[3][2] << '\n';
 	}
 	catch (const std::length_error& e) {
 		std::cerr << e.what() << '\n';
