@@ -126,6 +126,9 @@ namespace nonstd {
 	// Subscript operator.
 	template<class T, size_t M, size_t N>
 	std::vector<T> matrix<T, M, N>::operator[](size_t row) const {
+		if (row >= M) {
+			throw std::out_of_range("out of range of rows");
+		}
 		return std::vector<T>(
 			data.begin() + (row * N), 
 			data.begin() + (row * N) + N

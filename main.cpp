@@ -30,7 +30,7 @@ int main() {
 			}
 		}
 		std::cout << std::endl;
-		std::cout << matrix[2][2] << '\n';
+		std::cout << matrix[4][2] << '\n';
 
 		std::cout << matrix.slice<5, 2>({ }, { 0, 2 }) << '\n';
 
